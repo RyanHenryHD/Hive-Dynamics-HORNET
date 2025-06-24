@@ -20,6 +20,15 @@ MAVLINK READ: Pixhawk
   Terrain Cam (OpenCV or feature recognition library for GPS/Position estimation when jammed(paired with INS))
   Fuel Level: (61%) - estimated 22 minute remaining flight time
 
+  RASPBERRY PI CODE FLOW:
+  [Raspberry Pi] 
+  ➡️ [Read MAVLink from Pixhawk] 
+  ➡️ [Identify Sensor Messages: GPS, INS, etc.] 
+  ➡️ [Trigger CV Processing: Thermal/Visual/AGL] 
+  ➡️ [Decide Action: New Waypoint/loiter/avoid] 
+  ➡️ [Send Command Back To Pixhawk Via MAVLink]
+
+
   CREATE LLAMA PROMPT
   "
   GPS: (Jammed)
