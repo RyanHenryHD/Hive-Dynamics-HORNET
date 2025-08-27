@@ -10,12 +10,9 @@ logging.getLogger('ultralytics').setLevel(logging.WARNING)
 
 tracker = DeepSort(max_age=30)
 
-#cap = cv2.VideoCapture('/home/reed/Desktop/CodingProjects/Imaging/PeopleWalkingStock.mp4')
-cap = cv2.VideoCapture('/home/reed/Desktop/CodingProjects/Imaging/StockFootageOfStreetCorner.mp4')
-#cap = cv2.VideoCapture(0)
+#You can put any video file as long as it has people in it then it will be able to track them.
+cap = cv2.VideoCapture('/path/to/videoFile')
 
-#fps = cap.get(cv2.CAP_PROP_FPS)
-#delay = int((1000/fps) * (1/2))
 
 selectedIdIndex = 0
 activeIds = []
@@ -25,15 +22,16 @@ while(1):
 
     results = model(frame, show=False, classes=[0])
 
+#get your people detectons
     detections = []
     if results[0].boxes is not None:
         for box in results[0].boxes:
             x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
             conf = box.conf[0].cpu().item()
             detections.append(([x1, y1, x2 -x1, y2-y1], conf, 'person'))
-
     tracks = tracker.update_tracks(detections, frame = frame)
-
+    
+#For each person add a rectangle around them
     for track in tracks:
         if not track.is_confirmed():
             continue
@@ -43,8 +41,10 @@ while(1):
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
         cv2.putText(frame, f'ID: {track_id}', (x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0, 255, 0), 2)
 
+#Give every person a tracking id 
     activeIds = [t.track_id for t in tracks if t.is_confirmed()]
 
+#Pick a person by the order they are in the list of people and when there is no current person being tracked move onto someone else
     if activeIds:
         selectedIdIndex %= len(activeIds)
         selectedId = activeIds[selectedIdIndex]
@@ -54,6 +54,7 @@ while(1):
     if selectedId is not None:
         selectedTrack = next((t for t in tracks if t.track_id == selectedId), None)
 
+#Put a circle around your selected person
         if selectedTrack:
             x1, y1, x2, y2 = selectedTrack.to_ltrb()
             centerX = int((x2 + x1) / 2)
