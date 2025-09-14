@@ -1,0 +1,45 @@
+0) Preflight: Install dependencies on the Pi:
+
+# update & install pip if needed
+sudo apt update
+sudo apt install -y python3-pip python3-venv
+
+# make a python virtualenv (optional but recommended)
+python3 -m venv ~/drone_project/venv
+source ~/drone_project/venv/bin/activate
+
+# install pymavlink and opencv (opencv needed later for vision)
+pip install pymavlink opencv-python
+
+_____________________________________________________________________
+
+1) File: mavlink_interface.py
+Create ~/drone_project/mavlink_interface.py and paste the code below into it.
+
+****
+mavlink_interface.py
+****
+_____________________________________________________________________
+
+2) How to put the file on the Pi (exact terminal commands)
+If you’re on your laptop and SSH’d into the Pi, run:
+
+# Make project folder if you haven't already
+mkdir -p ~/drone_project
+cd ~/drone_project
+
+# Use nano (or your favorite editor) to create the file
+nano mavlink_interface.py
+# Paste the code into nano, then save (Ctrl+O) and exit (Ctrl+X)
+
+# Or from your laptop, scp the file over:
+# scp mavlink_interface.py pi@<pi-ip>:/home/pi/drone_project/
+
+_____________________________________________________________________
+
+3) Quick smoke-test (how to test the connection — safe, no arming)
+Create a tiny test file smoke_test_mav.py in the same folder:
+
+****
+smoke_test_mav.py
+****
